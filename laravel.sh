@@ -221,6 +221,12 @@ for file in "${DEPENDENCY_FILES[@]}"; do
         case "$file" in
             "composer.json"|"composer.lock")
                 NEED_INSTALL_PHP=true
+                ;;
+        esac
+    else
+        log " No previous hash for $file, skipping"
+    fi
+done
 FILES_TO_REMOVE=(
     ".history" ".cursor" ".qodo" ".trae" ".windsurf" ".vscode"
     "Documents" "sepay" "sepay_template" "SQL_Backup"
