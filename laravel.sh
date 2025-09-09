@@ -269,6 +269,10 @@ if [ "$NEED_INSTALL_PHP" = true ]; then
     log " Linking storage..."
     php artisan storage:link 2>&1 | tee -a "$LOG_FILE"
 
+    log " Setting proper file permissions..."
+    sudo chown -R www-data:www-data storage bootstrap/cache 2>&1 | tee -a "$LOG_FILE"
+    sudo chmod -R 775 storage bootstrap/cache 2>&1 | tee -a "$LOG_FILE"
+
     log " Optimizing..."
     if [ -f "./optimize.sh" ]; then
         bash ./optimize.sh 2>&1 | tee -a "$LOG_FILE"
@@ -293,6 +297,10 @@ else
 
     log " Linking storage..."
     php artisan storage:link 2>&1 | tee -a "$LOG_FILE"
+
+    log " Setting proper file permissions..."
+    sudo chown -R www-data:www-data storage bootstrap/cache 2>&1 | tee -a "$LOG_FILE"
+    sudo chmod -R 775 storage bootstrap/cache 2>&1 | tee -a "$LOG_FILE"
 
     log " Optimizing..."
     if [ -f "./optimize.sh" ]; then
