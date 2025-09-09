@@ -273,12 +273,14 @@ if [ "$NEED_INSTALL_PHP" = true ]; then
     sudo chown -R www-data:www-data storage bootstrap/cache 2>&1 | tee -a "$LOG_FILE"
     sudo chmod -R 775 storage bootstrap/cache 2>&1 | tee -a "$LOG_FILE"
 
-    log " Optimizing..."
-    if [ -f "./optimize.sh" ]; then
-        bash ./optimize.sh 2>&1 | tee -a "$LOG_FILE"
-    else
-        log " optimize.sh file not found"
-    fi
+    log " Optimizing application..."
+    php artisan optimize:clear 2>&1 | tee -a "$LOG_FILE"
+    php artisan cache:clear 2>&1 | tee -a "$LOG_FILE"
+    php artisan config:clear 2>&1 | tee -a "$LOG_FILE"
+    php artisan route:clear 2>&1 | tee -a "$LOG_FILE"
+    php artisan view:clear 2>&1 | tee -a "$LOG_FILE"
+    php artisan livewire:publish --assets 2>&1 | tee -a "$LOG_FILE"
+    php artisan optimize 2>&1 | tee -a "$LOG_FILE"
 
     log " Creating sitemap..."
     if [ -f "./sitemap.sh" ]; then
@@ -302,12 +304,14 @@ else
     sudo chown -R www-data:www-data storage bootstrap/cache 2>&1 | tee -a "$LOG_FILE"
     sudo chmod -R 775 storage bootstrap/cache 2>&1 | tee -a "$LOG_FILE"
 
-    log " Optimizing..."
-    if [ -f "./optimize.sh" ]; then
-        bash ./optimize.sh 2>&1 | tee -a "$LOG_FILE"
-    else
-        log " optimize.sh file not found"
-    fi
+    log " Optimizing application..."
+    php artisan optimize:clear 2>&1 | tee -a "$LOG_FILE"
+    php artisan cache:clear 2>&1 | tee -a "$LOG_FILE"
+    php artisan config:clear 2>&1 | tee -a "$LOG_FILE"
+    php artisan route:clear 2>&1 | tee -a "$LOG_FILE"
+    php artisan view:clear 2>&1 | tee -a "$LOG_FILE"
+    php artisan livewire:publish --assets 2>&1 | tee -a "$LOG_FILE"
+    php artisan optimize 2>&1 | tee -a "$LOG_FILE"
 
     log " Creating sitemap..."
     if [ -f "./sitemap.sh" ]; then
