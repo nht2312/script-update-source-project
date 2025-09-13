@@ -86,13 +86,48 @@ trap 'EXIT_CODE=$?; on_exit $EXIT_CODE' EXIT
 TARGET_BRANCH=""
 TARGET_LABEL=""
 
-# Priority: -b|--branch parameter, then BRANCH environment variable
-if [ "$1" = "-b" ] || [ "$1" = "--branch" ]; then
-    if [ -n "$2" ]; then
-        TARGET_BRANCH="$2"
-    fi
-fi
+# Parse command line arguments
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        -b|--branch)
+            if [ -n "$2" ]; then
+                TARGET_BRANCH="$2"
+                shift 2
+            else
+                log "❌ Error: --branch requires a branch name"
+                exit 1
+            fi
+            ;;
+        --*)
+            # Handle --<branch_name> format
+            TARGET_BRANCH="${1#--}"
+            shift
+            ;;
+        -h|--help)
+            echo "Usage: $0 [OPTIONS]"
+            echo ""
+            echo "Options:"
+            echo "  -b, --branch <branch>    Specify branch to deploy"
+            echo "  --<branch_name>          Deploy specific branch (e.g., --master, --develop, --feat/abc)"
+            echo "  -h, --help              Show this help message"
+            echo ""
+            echo "Examples:"
+            echo "  $0                      # Interactive mode"
+            echo "  $0 --master            # Deploy master branch"
+            echo "  $0 --develop           # Deploy develop branch"
+            echo "  $0 --feat/abc          # Deploy feature branch"
+            echo "  $0 -b production       # Deploy production branch"
+            exit 0
+            ;;
+        *)
+            log "❌ Unknown option: $1"
+            log "Use -h or --help for usage information"
+            exit 1
+            ;;
+    esac
+done
 
+# If no branch specified from command line, check environment variable
 if [ -z "$TARGET_BRANCH" ] && [ -n "$BRANCH" ]; then
     TARGET_BRANCH="$BRANCH"
 fi
